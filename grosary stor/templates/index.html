@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Green Wally Grocers{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">Welcome to Green Wally Grocers</h1>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for product in products %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-img-container">
+                <img src="{{ url_for('static', filename='images/' + product.image) }}" 
+                     class="card-img-top" 
+                     alt="{{ product.name }}"
+                     onerror="this.onerror=null; this.src='{{ url_for('static', filename='images/default.jpg') }}'; console.log('Image failed to load:', '{{ product.image }}');">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.description }}</p>
+                <p class="card-text"><strong>Price: ₹{{ "%.2f"|format(product.price) }}</strong></p>
+                {% if current_user.is_authenticated %}
+                    <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST">
+                        <button type="submit" class="btn btn-success">Add to Cart</button>
+                    </form>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-success">Login to Purchase</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %} 
